@@ -7,7 +7,7 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Ceiling_Office_Mat
+  m_Name: DarkLight
   m_Shader: {fileID: -6465566751694194690, guid: bbedfa6c7ca379747862390237251092,
     type: 3}
   m_Parent: {fileID: 0}
