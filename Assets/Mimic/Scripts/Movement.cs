@@ -51,7 +51,7 @@ namespace MimicSpace
         // function to wait for maze to be generated
         IEnumerator Wait()
         {
-            yield return new WaitForSeconds(1.0f);
+            yield return new WaitForSeconds(10.0f);
         }
 
         private void Start()
@@ -254,8 +254,9 @@ namespace MimicSpace
            }
     
 
-            // if we have no last known position, move towards the final cell
-            MoveToCoordinate(new Vector2Int(generator.getMazeWidth() - 1, generator.getMazeDepth() - 1));
+            // if we have no last known position, move towards the center of the maze
+
+            MoveToCoordinate(new Vector2Int(generator.getMazeWidth() / 2, generator.getMazeDepth() / 2));
             
         }
 

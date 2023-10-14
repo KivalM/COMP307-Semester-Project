@@ -7,6 +7,8 @@ public class MazeGenerator : MonoBehaviour
 {
 
     public int CellSize = 3;
+    public int TokenCount = 10;
+
 
     [SerializeField]
     private MazeCell _mazeCellPrefab;
@@ -19,10 +21,6 @@ public class MazeGenerator : MonoBehaviour
 
     [SerializeField]
     private MazeCell[,] _mazeGrid;
-
-
-    [SerializeField]
-    private Vector2Int PlayerCoords;
 
 
     public int getMazeWidth()
@@ -40,10 +38,7 @@ public class MazeGenerator : MonoBehaviour
         return _mazeGrid;
     }
 
-    public Vector2Int getPlayerCoords()
-    {
-        return PlayerCoords;
-    }
+
 
     void Start()
     {
@@ -60,14 +55,6 @@ public class MazeGenerator : MonoBehaviour
         }
 
         GenerateMaze(null, _mazeGrid[0, 0]);
-    }
-
-    private void Update()
-    {
-        GameObject gameObject = GameObject.Find("Player");
-
-        PlayerCoords.x = (int)gameObject.transform.position.x / CellSize;
-        PlayerCoords.y = (int)gameObject.transform.position.z / CellSize;
     }
 
     private void GenerateMaze(MazeCell previousCell, MazeCell currentCell)
@@ -100,45 +87,70 @@ public class MazeGenerator : MonoBehaviour
             }
         }
 
-        // place a token at the end cell
-        _mazeGrid[_mazeWidth - 1, _mazeDepth - 1].SetTokenActive(true);
-
-
-
-
-/*        // randomly remove walls to create loops
-        for (int i = 0; i < _mazeDepth + _mazeWidth; i++)
+        // scatter tokens in the maze
+        int tokenCount = TokenCount;
+        
+        while (tokenCount > 0)
         {
-            // pick a random cell
+            Random.InitState( tokenCount * 1000 + (int)System.DateTime.Now.Ticks );
             int x = Random.Range(0, _mazeWidth);
             int z = Random.Range(0, _mazeDepth);
 
-            var cell = _mazeGrid[x, z];
 
-            // pick a random neighbour 1 - 4
-            var neighbour_idx = Random.Range(1, 4);
-
-            if (neighbour_idx == 1)
-                x = x + 1;
-            else if (neighbour_idx == 2)
-                x = x - 1;
-            else if (neighbour_idx == 3)
-                z = z + 1;
-            else if (neighbour_idx == 4)
-                z = z - 1;
-
-            // check if the neighbour is within the bounds of the maze
-            if (x < 0 || x >= _mazeWidth || z < 0 || z >= _mazeDepth)
-                continue;
-
-            var neighbour = _mazeGrid[x, z];
+            _mazeGrid[x, z].SetTokenActive(true);
+            tokenCount--;
+        }
 
 
 
-            // remove the wall between the two cells
-            ClearWalls(cell, neighbour);
 
-        }*/
+        // remove the center 20% of the maze
+        int xStart = (int)(_mazeWidth * 0.4);
+        int xEnd = (int)(_mazeWidth * 0.6);
+
+        int zStart = (int)(_mazeDepth * 0.4);
+        int zEnd = (int)(_mazeDepth * 0.6);
+
+        for (int x = xStart; x < xEnd; x++)
+        {
+            for (int z = zStart; z < zEnd; z++)
+            {
+                _mazeGrid[x, z].ClearBackWall();
+                _mazeGrid[x, z].ClearFrontWall();
+                _mazeGrid[x, z].ClearLeftWall();
+                _mazeGrid[x, z].ClearRightWall();
+            }
+        }
+
+
+        // randomly remove 20% of the walls
+    /*        int wallCount = 30;
+
+            while (wallCount > 0)
+            {
+                int x = Random.Range(0, _mazeWidth);
+                int z = Random.Range(0, );
+
+                Debug.Log("Removing wall at " + x + "," + z);
+
+
+                int wall = Random.Range(0, 4);
+
+                MazeCell mazeCell = _mazeGrid[x, z];
+                MazeCell cell = null;
+
+                if (wall == 0 && z + 1 < _mazeDepth)
+                    cell = _mazeGrid[x, z + 1];
+                else if (wall == 1 && z - 1 >= 0)
+                    cell = _mazeGrid[x, z - 1];
+                else if (wall == 2 && x + 1 < _mazeWidth)
+                    cell = _mazeGrid[x + 1, z];
+                else if (wall == 3 && x - 1 >= 0)
+                    cell = _mazeGrid[x - 1, z];
+
+                ClearWalls(mazeCell, cell);
+                wallCount--;
+            }*/
 
 
     }

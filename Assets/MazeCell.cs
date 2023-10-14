@@ -45,6 +45,11 @@ public class MazeCell : MonoBehaviour
         return !_backWall.activeSelf;
     }
 
+    public bool isTokenActive()
+    {
+        return _token.activeSelf;
+    }
+
     public bool IsVisited { get; private set; }
 
     public void Visit()
