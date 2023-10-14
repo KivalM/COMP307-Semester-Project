@@ -9,9 +9,11 @@ public class MazeGenerator : MonoBehaviour
     public int CellSize = 3;
     public int TokenCount = 10;
 
-
     [SerializeField]
     private MazeCell _mazeCellPrefab;
+
+    [SerializeField]
+    private MazeCell _mazeCellPrefabOther;
 
     [SerializeField]
     private int _mazeWidth;
@@ -44,11 +46,25 @@ public class MazeGenerator : MonoBehaviour
     {
         _mazeGrid = new MazeCell[_mazeWidth, _mazeDepth];
 
+        int randomPrefabIndex;
+
+        MazeCell prefabChoice;
+
         for (int x = 0; x < _mazeWidth; x++)
         {
             for (int z = 0; z < _mazeDepth; z++)
             {
-                _mazeGrid[x, z] = Instantiate(_mazeCellPrefab, new Vector3(x*CellSize, 0, z*CellSize), Quaternion.identity);
+                randomPrefabIndex = Random.Range(0, 2);
+                if (randomPrefabIndex == 0)
+                {
+                    prefabChoice = _mazeCellPrefab;
+                }
+                else
+                {
+                    prefabChoice = _mazeCellPrefabOther;
+                }
+
+                _mazeGrid[x, z] = Instantiate(prefabChoice, new Vector3(x*CellSize, 0, z*CellSize), Quaternion.identity);
                 // rename the maze cells to the coordinates
                 _mazeGrid[x, z].name = x + "," + z;
             }
