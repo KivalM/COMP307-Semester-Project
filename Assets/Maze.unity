@@ -491,11 +491,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   CellSize: 3
+  TokenCount: 10
   _mazeCellPrefab: {fileID: 3666678956300052391, guid: 451bd173f3a655244b85caab75b0a8af,
     type: 3}
-  _mazeWidth: 30
-  _mazeDepth: 30
-  PlayerCoords: {x: 0, y: 0}
+  _mazeWidth: 10
+  _mazeDepth: 10
 --- !u!4 &500978155
 Transform:
   m_ObjectHideFlags: 0

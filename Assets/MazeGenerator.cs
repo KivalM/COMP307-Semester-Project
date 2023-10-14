@@ -55,28 +55,6 @@ public class MazeGenerator : MonoBehaviour
         }
 
         GenerateMaze(null, _mazeGrid[0, 0]);
-    }
-
-    private void GenerateMaze(MazeCell previousCell, MazeCell currentCell)
-    {
-        currentCell.Visit();
-        ClearWalls(previousCell, currentCell);
-
-        MazeCell nextCell;
-
-        do
-        {
-            nextCell = GetNextUnvisitedCell(currentCell);
-
-            if (nextCell != null)
-            {
-                GenerateMaze(currentCell, nextCell);
-            }
-            else
-            {
-                // 
-            }
-        } while (nextCell != null);
 
         // disable tokens for all cells
         for (int x = 0; x < _mazeWidth; x++)
@@ -89,10 +67,10 @@ public class MazeGenerator : MonoBehaviour
 
         // scatter tokens in the maze
         int tokenCount = TokenCount;
-        
+
         while (tokenCount > 0)
         {
-            Random.InitState( tokenCount * 1000 + (int)System.DateTime.Now.Ticks );
+            Random.InitState(tokenCount * 1000 + (int)System.DateTime.Now.Ticks);
             int x = Random.Range(0, _mazeWidth);
             int z = Random.Range(0, _mazeDepth);
 
@@ -122,36 +100,53 @@ public class MazeGenerator : MonoBehaviour
             }
         }
 
+        int wallCount =  _mazeDepth * _mazeWidth / 5;
 
-        // randomly remove 20% of the walls
-    /*        int wallCount = 30;
+        while (wallCount > 0)
+        {
+            Debug.Log("Wall count: " + wallCount);
+            Random.InitState(wallCount * 1000 + (int)System.DateTime.Now.Ticks);
+            int x = Random.Range(0, _mazeWidth);
+            int z = Random.Range(0, _mazeDepth);
 
-            while (wallCount > 0)
+            Debug.Log("Removing wall at " + x + "," + z);
+            wallCount--;
+
+            int wall = Random.Range(0, 4);
+
+            MazeCell mazeCell = _mazeGrid[x, z];
+            MazeCell cell = null;
+
+            if (wall == 0 && z + 1 < _mazeDepth)
+                cell = _mazeGrid[x, z + 1];
+            else if (wall == 1 && z - 1 >= 0)
+                cell = _mazeGrid[x, z - 1];
+            else if (wall == 2 && x + 1 < _mazeWidth)
+                cell = _mazeGrid[x + 1, z];
+            else if (wall == 3 && x - 1 >= 0)
+                cell = _mazeGrid[x - 1, z];
+
+            ClearWalls(cell, mazeCell);
+
+        }
+    }
+
+    private void GenerateMaze(MazeCell previousCell, MazeCell currentCell)
+    {
+        currentCell.Visit();
+        ClearWalls(previousCell, currentCell);
+
+        MazeCell nextCell;
+
+        do
+        {
+            nextCell = GetNextUnvisitedCell(currentCell);
+
+            if (nextCell != null)
             {
-                int x = Random.Range(0, _mazeWidth);
-                int z = Random.Range(0, );
-
-                Debug.Log("Removing wall at " + x + "," + z);
-
-
-                int wall = Random.Range(0, 4);
-
-                MazeCell mazeCell = _mazeGrid[x, z];
-                MazeCell cell = null;
-
-                if (wall == 0 && z + 1 < _mazeDepth)
-                    cell = _mazeGrid[x, z + 1];
-                else if (wall == 1 && z - 1 >= 0)
-                    cell = _mazeGrid[x, z - 1];
-                else if (wall == 2 && x + 1 < _mazeWidth)
-                    cell = _mazeGrid[x + 1, z];
-                else if (wall == 3 && x - 1 >= 0)
-                    cell = _mazeGrid[x - 1, z];
-
-                ClearWalls(mazeCell, cell);
-                wallCount--;
-            }*/
-
+                GenerateMaze(currentCell, nextCell);
+            }
+        } while (nextCell != null);
 
     }
 
