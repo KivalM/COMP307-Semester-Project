@@ -5,73 +5,96 @@ using UnityEngine;
 public class token : MonoBehaviour
 {
     // Start is called before the first frame update
-    public int segments = 50;
-    public float outerRadius = 5f;
-    public float innerRadius = 4f;
-    public float height = 0.2f;
-    public float rotationSpeed = 20f;
-    public float destroyRange = 5f; // Set your desired destroy range
-    public float destroyDelay = 2f;
-    private Vector3 centerPosition;
-    public Vector3 posInit = new Vector3();
+    public int segments = 10;
+    public float radius = 0.5f;
    
     
+    private float rotationSpeed = 5f;
+    private float lerpSpeed = 5f;
+
+    private float angle = 0f;
 
 
     void Start()
     {
         
         CreateRing();
-        transform.position = posInit;
-        transform.localScale = new Vector3(0.02f, 0.02f, 0.02f);
-        transform.rotation = Quaternion.Euler(0f, 0f, 90f);
-        centerPosition = transform.position + new Vector3(0f, height / 2f * transform.localScale.y, 0f);
-        
 
+        // add a collider
+        gameObject.AddComponent<SphereCollider>();
+
+        // add a rigidbody and set it to kinematic so it doesn't react to gravity
+        Rigidbody rigidbody = gameObject.AddComponent<Rigidbody>();
+        
+        rigidbody.isKinematic = true;
+
+        // add a trigger
+        SphereCollider collider = gameObject.GetComponent<SphereCollider>();
+        collider.isTrigger = true;
+        collider.radius = radius*2;
     }
+
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.gameObject.tag == "Player")
+        {
+
+             // add the token to the player's inventory
+            other.gameObject.GetComponent<Inventory>().AddToken();
+
+            // destroy the token
+            Destroy(gameObject);
+        }
+    }
+
+
+
+
     private void Update()
     {
-        transform.RotateAround(centerPosition, Vector3.up, rotationSpeed * Time.deltaTime);
-        
+
+        // rotate the ring around the center position
+        angle += rotationSpeed * Time.deltaTime;
+
+        if (angle >= 360f)
+        {
+            angle = 0f;
+        }
+
+        transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.Euler(0f, angle, 0f), Time.deltaTime * lerpSpeed);
+
     }
    
 
     void CreateRing()
     {
-        
+
+        // get the coordinates of the center position
+        Vector3 centerPosition = transform.position;
+
+
+
+        // draw a ring of cylinder segments around the center position
         for (int i = 0; i < segments; i++)
         {
-            float angle = 2 * Mathf.PI * i / segments;
-            float x_outer = outerRadius * Mathf.Cos(angle);
-            float y_outer = outerRadius * Mathf.Sin(angle);
-
-            float x_inner = innerRadius * Mathf.Cos(angle);
-            float y_inner = innerRadius * Mathf.Sin(angle);
-
-            Vector3 outerPoint = centerPosition + new Vector3(x_outer, 0f, y_outer);
-            Vector3 innerPoint = centerPosition + new Vector3(x_inner, 0f, y_inner);
-
-            // Create a cylinder segment between outer and inner points
-            CreateCylinderSegment(outerPoint, innerPoint);
+            float angle = (i * 360f / segments) * Mathf.Deg2Rad;
+            float x = Mathf.Sin(angle) * radius;
+            float z = Mathf.Cos(angle) * radius;
+            Vector3 position = centerPosition + new Vector3(x, 0f, z);
+            Vector3 position2 = centerPosition + new Vector3(x, 0f, z);
+            drawSegment(position, position2);
         }
     }
 
-    void CreateCylinderSegment(Vector3 start, Vector3 end)
+    void drawSegment( Vector3 position, Vector3 position2)
     {
-        Vector3 position = (start + end) / 2f;
-        Quaternion rotation = Quaternion.LookRotation(end - start, Vector3.up);
-        float distance = Vector3.Distance(start, end);
-
-        GameObject cylinder = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
-        cylinder.transform.position = position;
-        cylinder.transform.rotation = rotation;
-        cylinder.transform.localScale = new Vector3(cylinder.transform.localScale.x, distance / 2f, cylinder.transform.localScale.z);
-
-        
-        // Set the current GameObject as the parent
-        cylinder.transform.SetParent(transform);
-
-
+        GameObject segment = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+        segment.transform.position = position;
+        segment.transform.localScale = new Vector3(radius, 0.5f, radius);
+        segment.transform.LookAt(position2);
+        segment.transform.Rotate(90f, 0f, 0f);
+        segment.transform.parent = transform;
     }
     
 

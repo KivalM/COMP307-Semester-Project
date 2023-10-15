@@ -5,14 +5,6 @@ using UnityEngine;
 
 namespace MimicSpace
 {
-    /// <summary>
-    /// This is a very basic movement script, if you want to replace it
-    /// Just don't forget to update the Mimic's velocity vector with a Vector3(x, 0, z)
-    /// </summary>
-    /// 
-
-
-
     public class PathNode
     {
         public Vector2Int coords;
@@ -25,9 +17,6 @@ namespace MimicSpace
             this.parent = parent;
         }
     }
-
-
-
 
     public class Movement : MonoBehaviour
     {
@@ -46,6 +35,12 @@ namespace MimicSpace
 
         public Transform target;
         private MazeGenerator generator;
+
+        public int spawnX = 0;
+        public int spawnZ = 0;
+
+
+        public Vector3 lastTargetPos = new Vector3(-1, -1, -1);
 
 
         // function to wait for maze to be generated
@@ -71,6 +66,9 @@ namespace MimicSpace
             {
                 transform.position = new Vector3(0, 0, 0);
             }
+
+            spawnX = ((int)transform.position.x + generator.CellSize / 2) / generator.CellSize;
+            spawnZ = ((int)transform.position.z + generator.CellSize / 2) / generator.CellSize;
 
       
 
@@ -153,7 +151,6 @@ namespace MimicSpace
             return new List<PathNode>();
         }
 
-       public Vector3 lastTargetPos = new Vector3(0, 0, 0);
 
         void Update()
         {
@@ -170,7 +167,7 @@ namespace MimicSpace
             //transform.position = Vector3.Lerp(transform.position, destHeight, velocityLerpCoef * Time.deltaTime);
 
             Vector3 targetPos = new Vector3(target.position.x, target.position.y, target.position.z);
-            Vector2 targetMazeCoords = new Vector2((targetPos.x + 1.5f) / generator.CellSize, (targetPos.z + 1.5f) / generator.CellSize);
+            Vector2 targetMazeCoords = new Vector2((targetPos.x + generator.CellSize/2) / generator.CellSize, (targetPos.z + generator.CellSize/2) / generator.CellSize);
 
             
 
@@ -196,8 +193,6 @@ namespace MimicSpace
                     // if the ray hits the player
                     if (hit.transform.gameObject.CompareTag("Player"))
                     {
-
-
                         // only move in x and z
                         Vector3 targetPos2 = new Vector3(targetPos.x, transform.position.y, targetPos.z);
                         
@@ -237,7 +232,7 @@ namespace MimicSpace
             }
 
            // if we have a last known position
-           if (lastTargetPos != new Vector3(0, 0, 0))
+           if (lastTargetPos != new Vector3(-1, -1, -1))
             {
                 Vector2 lastCoords = new Vector2((lastTargetPos.x + 1.5f) / generator.CellSize, (lastTargetPos.z + 1.5f) / generator.CellSize);
                 Vector2Int mazeCoords = new Vector2Int((int)lastCoords.x, (int)lastCoords.y);
@@ -245,9 +240,9 @@ namespace MimicSpace
 
 
                 // if we are at the last known position, clear it and return
-                if (lastTargetPos.x - transform.position.x < 1f && lastTargetPos.z - transform.position.z < 1f)
+                if (lastTargetPos.x - transform.position.x < generator.CellSize && lastTargetPos.z - transform.position.z < generator.CellSize)
                 {
-                    lastTargetPos = new Vector3(0, 0, 0);
+                    lastTargetPos = new Vector3(-1, -1, -1);
                 }
 
                 return;
@@ -256,7 +251,7 @@ namespace MimicSpace
 
             // if we have no last known position, move towards the center of the maze
 
-            MoveToCoordinate(new Vector2Int(generator.getMazeWidth() / 2, generator.getMazeDepth() / 2));
+            MoveToCoordinate(new Vector2Int(spawnX, spawnZ));
             
         }
 

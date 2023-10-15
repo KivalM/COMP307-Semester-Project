@@ -8,6 +8,11 @@ public class MazeGenerator : MonoBehaviour
 
     public int CellSize = 3;
     public int TokenCount = 10;
+    public int RemoveWalls = 10;
+    
+    // monster object
+    public int monsterCount = 1;
+    public GameObject monsterPrefab;
 
     [SerializeField]
     private MazeCell _mazeCellPrefab;
@@ -116,7 +121,7 @@ public class MazeGenerator : MonoBehaviour
             }
         }
 
-        int wallCount =  _mazeDepth * _mazeWidth / 5;
+        int wallCount = RemoveWalls;
 
         while (wallCount > 0)
         {
@@ -144,6 +149,39 @@ public class MazeGenerator : MonoBehaviour
 
             ClearWalls(cell, mazeCell);
 
+        }
+
+        // place monsters in the maze
+        int monsterCount = this.monsterCount;
+
+        while (monsterCount > 0)
+        {
+            monsterCount--;
+
+            Random.InitState(monsterCount * 1000 + (int)System.DateTime.Now.Ticks);
+            int x = Random.Range(0, _mazeWidth);
+            int z = Random.Range(0, _mazeDepth);
+
+            Debug.Log("Placing monster at " + x + "," + z);
+
+            // place monster at the center of the cell
+            Vector3 monsterPosition = new Vector3(x * CellSize + CellSize / 2, 1, z * CellSize + CellSize / 2);
+        
+
+
+
+            GameObject monster = Instantiate(monsterPrefab, monsterPosition, Quaternion.identity);
+
+            // get the movement script
+            MimicSpace.Movement monsterMovement = monster.GetComponent<MimicSpace.Movement>();
+
+            monsterMovement.spawnX = x;
+            monsterMovement.spawnZ = z;
+
+            // set the target to the player
+            Transform player = GameObject.Find("Player").transform;
+            monsterMovement.target = player;
+           
         }
     }
 
