@@ -125,12 +125,10 @@ public class MazeGenerator : MonoBehaviour
 
         while (wallCount > 0)
         {
-            Debug.Log("Wall count: " + wallCount);
             Random.InitState(wallCount * 1000 + (int)System.DateTime.Now.Ticks);
             int x = Random.Range(0, _mazeWidth);
             int z = Random.Range(0, _mazeDepth);
 
-            Debug.Log("Removing wall at " + x + "," + z);
             wallCount--;
 
             int wall = Random.Range(0, 4);
@@ -162,7 +160,6 @@ public class MazeGenerator : MonoBehaviour
             int x = Random.Range(0, _mazeWidth);
             int z = Random.Range(0, _mazeDepth);
 
-            Debug.Log("Placing monster at " + x + "," + z);
 
             // place monster at the center of the cell
             Vector3 monsterPosition = new Vector3(x * CellSize + CellSize / 2, 1, z * CellSize + CellSize / 2);

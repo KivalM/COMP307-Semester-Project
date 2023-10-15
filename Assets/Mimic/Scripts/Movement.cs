@@ -180,6 +180,8 @@ namespace MimicSpace
             // check if player is visible
             if (distance <= lineOfSightRange)
             {
+
+                Debug.Log("Can see player");
                 // fire the ray from slightly above the mimic
                 Vector3 rayOrigin = mimicPos + new Vector3(0, 0, 0);
 
@@ -207,6 +209,7 @@ namespace MimicSpace
                         // set the velocity so the legs move
                         velocity = Vector3.Lerp(velocity, new Vector3(targetPos2.x - transform.position.x, 0, targetPos2.z - transform.position.z).normalized * speed, velocityLerpCoef * Time.deltaTime);
 
+                        Debug.Log("Saved last known position");
                         lastTargetPos = targetPos2;
                         
                         return;
@@ -217,6 +220,7 @@ namespace MimicSpace
            // if the mimic can hear the player
            if (distance <= hearingRange)
             {
+                // Debug.Log("Can hear player");
                 // check the players speed from the character controller
                 CharacterController controller = target.GetComponent<CharacterController>();
                 Vector3 playerVelocity = controller.velocity;
@@ -224,8 +228,11 @@ namespace MimicSpace
                 // if the player is moving above a certain speed or we are pathing to the last known position
                 if (playerVelocity.magnitude >= playerSpeedThreshold)
                 {
+                    Debug.Log("Player is moving fast");
                     MoveToCoordinate(new Vector2Int((int)targetMazeCoords.x, (int)targetMazeCoords.y));
 
+
+                    Debug.Log("Saved last known position");
                     lastTargetPos = target.position;
                     return;
                 }
@@ -234,13 +241,12 @@ namespace MimicSpace
            // if we have a last known position
            if (lastTargetPos != new Vector3(-1, -1, -1))
             {
-                Vector2 lastCoords = new Vector2((lastTargetPos.x + 1.5f) / generator.CellSize, (lastTargetPos.z + 1.5f) / generator.CellSize);
+                Vector2 lastCoords = new Vector2((lastTargetPos.x + generator.CellSize/2) / generator.CellSize, (lastTargetPos.z + generator.CellSize/2) / generator.CellSize);
                 Vector2Int mazeCoords = new Vector2Int((int)lastCoords.x, (int)lastCoords.y);
                 MoveToCoordinate(mazeCoords);
 
 
-                // if we are at the last known position, clear it and return
-                if (lastTargetPos.x - transform.position.x < generator.CellSize && lastTargetPos.z - transform.position.z < generator.CellSize)
+                if (mimicMazeCoords.x == mazeCoords.x && mimicMazeCoords.y == mazeCoords.y)
                 {
                     lastTargetPos = new Vector3(-1, -1, -1);
                 }
@@ -287,8 +293,17 @@ namespace MimicSpace
                     // cast a ray from mimic
                     if (Physics.Raycast(rayOrigin, rayDestination - rayOrigin, out RaycastHit hit))
                     {
-                        pathNodes.RemoveAt(0);
-                        pathNode = pathNodes[0];
+
+                        // if the ray goes the full distance
+                        if (hit.distance >= Vector3.Distance(rayOrigin, rayDestination))
+                        {
+                            // remove the first node
+                            pathNodes.RemoveAt(0);
+                            pathNode = pathNodes[0];
+                        }
+
+
+                     
                     }
                 }
 
