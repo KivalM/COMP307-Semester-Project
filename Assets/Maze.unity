@@ -928,9 +928,11 @@ MonoBehaviour:
   monsterCount: 10
   monsterPrefab: {fileID: 8675915457954794080, guid: 3fc537e92bf3d2449b5be72cfd6cb447,
     type: 3}
-  _mazeCellPrefab: {fileID: 3666678956300052391, guid: 451bd173f3a655244b85caab75b0a8af,
+  _mazeCellPrefabOne: {fileID: 3666678956300052391, guid: 451bd173f3a655244b85caab75b0a8af,
     type: 3}
-  _mazeCellPrefabOther: {fileID: 3666678956300052391, guid: 617020fe0ce467c4e829463b5c7bfe18,
+  _mazeCellPrefabTwo: {fileID: 3666678956300052391, guid: 617020fe0ce467c4e829463b5c7bfe18,
+    type: 3}
+  _mazeCellPrefabThree: {fileID: 4157402677600787581, guid: 1e08667770d08af459ed56fd6568a4be,
     type: 3}
   _mazeWidth: 30
   _mazeDepth: 30

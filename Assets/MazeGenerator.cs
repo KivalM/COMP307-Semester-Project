@@ -15,10 +15,13 @@ public class MazeGenerator : MonoBehaviour
     public GameObject monsterPrefab;
 
     [SerializeField]
-    private MazeCell _mazeCellPrefab;
+    private MazeCell _mazeCellPrefabOne;
 
     [SerializeField]
-    private MazeCell _mazeCellPrefabOther;
+    private MazeCell _mazeCellPrefabTwo;
+
+    [SerializeField]
+    private MazeCell _mazeCellPrefabThree;
 
     [SerializeField]
     private int _mazeWidth;
@@ -59,14 +62,18 @@ public class MazeGenerator : MonoBehaviour
         {
             for (int z = 0; z < _mazeDepth; z++)
             {
-                randomPrefabIndex = Random.Range(0, 2);
+                randomPrefabIndex = Random.Range(0, 3);
                 if (randomPrefabIndex == 0)
                 {
-                    prefabChoice = _mazeCellPrefab;
+                    prefabChoice = _mazeCellPrefabOne;
+                }
+                else if(randomPrefabIndex == 1)
+                {
+                    prefabChoice = _mazeCellPrefabTwo;
                 }
                 else
                 {
-                    prefabChoice = _mazeCellPrefabOther;
+                    prefabChoice = _mazeCellPrefabThree;
                 }
 
                 _mazeGrid[x, z] = Instantiate(prefabChoice, new Vector3(x*CellSize, 0, z*CellSize), Quaternion.identity);
