@@ -24,6 +24,9 @@ public class MazeGenerator : MonoBehaviour
     private MazeCell _mazeCellPrefabThree;
 
     [SerializeField]
+    private MazeCell _mazeCellPrefabFour;
+
+    [SerializeField]
     private int _mazeWidth;
 
     [SerializeField]
@@ -71,9 +74,13 @@ public class MazeGenerator : MonoBehaviour
                 {
                     prefabChoice = _mazeCellPrefabTwo;
                 }
-                else
+                else if(randomPrefabIndex == 1)
                 {
                     prefabChoice = _mazeCellPrefabThree;
+                }
+                else
+                {
+                    prefabChoice = _mazeCellPrefabFour;
                 }
 
                 _mazeGrid[x, z] = Instantiate(prefabChoice, new Vector3(x*CellSize, 0, z*CellSize), Quaternion.identity);
