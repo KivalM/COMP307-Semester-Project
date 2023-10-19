@@ -22,11 +22,36 @@ public class PauseGame : MonoBehaviour
         on = false;
     }
 
+    public void Pause()
+    {
+
+            Cursor.visible = true;
+            Cursor.lockState = CursorLockMode.None;
+            Time.timeScale = 0;
+            menu.SetActive(true);
+            off = false;
+            on = true;
+ 
+    }
+
+    public void HideResume()
+    {
+        resume.SetActive(false);
+    }
+
 
 
 
     void Update()
     {
+
+
+ 
+
+
+
+
+
         if (off && Input.GetButtonDown("pause"))
         {
             Cursor.visible = true;
